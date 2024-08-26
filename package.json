@@ -1,16 +1,17 @@
 {
-  "name": "loginpage-api",
+  "name": "telalogin-api",
   "version": "1.0.0",
-  "type": "module",
-  "description": "",
+  "description": "aprendizado para tela de login funcional",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Matheus Guilherme",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.3"
   }
 }
