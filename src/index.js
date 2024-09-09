@@ -9,6 +9,7 @@ app.use(cors())
 const port = 3000
 
 
+mongoose.connect("mongodb+srv://zmatheusguilherme2:VZFl3Wiwh10lXO3U@telalogin.jtvnbqg.mongodb.net/?retryWrites=true&w=majority&appName=TelaLogin")
 
 const Usuario = mongoose.model('usuario', {
     name: String,
