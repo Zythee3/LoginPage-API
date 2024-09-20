@@ -32,6 +32,21 @@ app.post("/", async (req, res) =>{
     res.send(novoUsuario)
 })
 
+app.post('/verificar-usuario', async (req, res) => {
+    const { nomeUsuario } = req.body;
+
+
+    // Simulação de consulta ao banco de dados
+    const usuarioExiste = await Usuario.findOne({ name: nomeUsuario });
+
+    if (usuarioExiste) {
+        return res.json(true);
+    } else {
+        return res.json(false);
+    }
+});
+
+
 app.listen(port, () =>{
     console.log("App running!")
 })
