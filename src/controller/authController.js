@@ -20,7 +20,7 @@ exports.register = async (req, res) => {
     await newUser.save();
     res.status(200).json({ message: "Usuario cadastrado com sucesso!" });
   } catch (error) {
-    res.status(500).json({ message: "Falha ao cadastrar o usuario", error });
+    res.status(500).json({ message: "Falha ao cadastrar o usuario" });
   }
 };
 
@@ -32,17 +32,27 @@ exports.login = async (req, res) => {
     // verificar se o usuario existe
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ message: "Usuario não encontrado" });
+      return res.status(400).json({ message: "Usuario não encontrado" });
     }
 
     // verifica se a senha esta correta
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      res.status(400).json({ message: "Senha inválida!" });
+      return res.status(400).json({ message: "Senha inválida!" });
     }
 
-    res.status(200).json({ message: "Login efetuado com sucesso!" });
+    return res.status(200).json({ message: "Login efetuado com sucesso!" });
   } catch (error) {
-    res.status(500).json({ message: "Error no servidor!" });
+    return res.status(500).json({ message: "Error no servidor!" });
+  }
+};
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+
+    return res.json({ message: "Senha alterada com sucesso!" });
+  } catch (error) {
+    res.status(500).json({ message: "Error servidor!" });
   }
 };
