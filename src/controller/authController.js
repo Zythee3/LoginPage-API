@@ -1,26 +1,20 @@
-const User = require("../models/user");
-const bcrypt = require("bcrypt");
+const {
+  AuthUpdatePassword,
+  AuthLogin,
+  AuthRegister
+} = require("../services/auth/authServices")
 
 // cadastro do usuario
 exports.register = async (req, res) => {
+  let registerResponse
   try {
     const { name, email, password } = req.body;
 
-    // verificação para ver se o usuario já existe
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email já cadastrado!" });
-    }
+    registerResponse = await AuthRegister({name, email, password})
 
-    // aqui serve para criptografar a senha
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // cria o usuario no banco
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
-    res.status(200).json({ message: "Usuario cadastrado com sucesso!" });
+    res.status(200).json({ message: registerResponse.message });
   } catch (error) {
-    res.status(500).json({ message: "Falha ao cadastrar o usuario" });
+    res.status(500).json({ message: registerResponse.message });
   }
 };
 
@@ -29,30 +23,38 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // verificar se o usuario existe
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Usuario não encontrado" });
+    const loginResponse = await AuthLogin({
+      email,
+      password,
+    });
+
+    if (!loginResponse.success) {
+      return res.status(400).json({ message: loginResponse.message });
     }
 
-    // verifica se a senha esta correta
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: "Senha inválida!" });
-    }
-
-    return res.status(200).json({ message: "Login efetuado com sucesso!" });
+    return res.status(200).json({ message: loginResponse.message });
   } catch (error) {
-    return res.status(500).json({ message: "Error no servidor!" });
+    return res.status(500).json({ message: `Error no Servidor: ${error.message }`});
   }
 };
 
+// Alterar a senha
 exports.updatePassword = async (req, res) => {
   try {
     const { email, currentPassword, newPassword } = req.body;
 
-    return res.json({ message: "Senha alterada com sucesso!" });
+    const updateResponse = await AuthUpdatePassword({
+      email,
+      currentPassword,
+      newPassword,
+    });
+
+    if (!updateResponse.success) {
+      return res.status(400).json({ message: updateResponse.message });
+    }
+
+    return res.status(200).json({ message: updateResponse.message });
   } catch (error) {
-    res.status(500).json({ message: "Error servidor!" });
+    return res.status(500).json({ message: "Error no servidor!" });
   }
 };
